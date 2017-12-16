@@ -1,12 +1,13 @@
 let answer = document.getElementById('answer');
 let attempt = 0;
 let generatedNumber = setHiddenFields();
+
 function guess() {
     let input = document.getElementById('user-guess');
     if(validateInput(input.value)){
     	attempt ++;
     	getResult(input.value);
-    	if(attempt < 11){
+    	if(attempt < 10){
     		didPlayerWin(input.value, generatedNumber.toString());
     	}else{
     		playerLost();
@@ -15,8 +16,11 @@ function guess() {
     	return false;
     }
 }
+function getAnswer(){
+	let answer = document.getElementById('answer');
+	return answer;
+}
 function setHiddenFields(){
-	attempt.value = 0;
 	let generatedNumber = Math.random()*10000;
 	let answer = Math.floor(generatedNumber);
 	if(!doesNumberHaveFourDigits(answer)){
@@ -27,8 +31,6 @@ function setHiddenFields(){
 }
 function doesNumberHaveFourDigits(number){
 	let digits = number.toString();
-	console.log(typeof(digits));
-	console.log(digits.length)
 	if(digits.length === 4) {
 
 		return true;
@@ -43,7 +45,6 @@ function makeNumberHasFourDigits(number){
 		digits = '0' + digits;
 	}
 	return digits;
-
 }
 function setMessage(message){
 	let messagePlace = document.getElementById('message');
@@ -51,23 +52,21 @@ function setMessage(message){
 }
 function validateInput(input){
 	if(doesNumberHaveFourDigits(input)){
-
 		return true;
 	}else{
+		setMessage("You must give a 4 digits number!");
 		return false;
 	}
 }
 
 function getResult(result){
 	resultsList = document.getElementById("results");
-	console.log(resultsList);
-	resultsList.innerHTML += '<div class="row"><span class="col-md-6">' + result + '</span><div class="col-md-6> <span class="col-md-6">' + analyzeResult(result) + '</span><div class="col-md-6>';
+	resultsList.innerHTML += '<div class="row"> <strong class="col-md-6">' + result + '</strong> <strong class="col-md-6">'+ analyzeResult(result) + '</strong> </div>';
 
 }
 function analyzeResult(result){
 	let resultDigits = generatedNumber.toString().split('');
 	let answerDigits = result.split('');
-	console.log( resultDigits + answerDigits)
 	let isInRightPlace = false;
 	let isInNumber = false;
 	let key = '';
@@ -93,23 +92,31 @@ function analyzeResult(result){
 	return key;
 }
 function didPlayerWin(userAnswer, correctAnswer){
-	console.log(userAnswer, correctAnswer);
 	if(userAnswer === correctAnswer){
-		setMessage("You won!");
-		showAnswer();
-		showReplay();
+		playerWon();
 	}else{
 		setMessage("Incorrect, try again!");
 	}
 }
+function playerWon(){
+	showAnswer('w');
+	showReplay();
+	setMessage("You won! :)");
+
+}
 function playerLost(){
-	showAnswer();
+	showAnswer('l');
 	showReplay();
 	setMessage("You lost! :(");	
 }
-function showAnswer(){
+function showAnswer(gameStatus){
 	let code = document.getElementById("code")
 	code.innerHTML = "<strong>" + generatedNumber + "</strong>";
+	if(gameStatus = 'w'){
+		code.classList.add('success');
+	}else{
+		code.classList.add('failure');
+	}
 }
 function showReplay(){
 	let guessingDiv = document.getElementById("guessing-div");
