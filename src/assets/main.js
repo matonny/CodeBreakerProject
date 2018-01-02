@@ -7,8 +7,12 @@ function guess() {
     if(validateInput(input.value)){
     	attempt ++;
     	getResult(input.value);
-    	if(attempt < 10){
-    		didPlayerWin(input.value, generatedNumber.toString());
+    	if(attempt < 5){
+    		if(didPlayerWin(input.value, generatedNumber.toString())){
+    			playerWon();
+    		}
+    	}else if(attempt === 5 && didPlayerWin(input.value, generatedNumber.toString())){
+    		playerWon();
     	}else{
     		playerLost();
     	}
@@ -93,7 +97,7 @@ function analyzeResult(result){
 }
 function didPlayerWin(userAnswer, correctAnswer){
 	if(userAnswer === correctAnswer){
-		playerWon();
+		return true;
 	}else{
 		setMessage("Incorrect, try again!");
 	}
@@ -112,7 +116,7 @@ function playerLost(){
 function showAnswer(gameStatus){
 	let code = document.getElementById("code")
 	code.innerHTML = "<strong>" + generatedNumber + "</strong>";
-	if(gameStatus = 'w'){
+	if(gameStatus === 'w'){
 		code.classList.add('success');
 	}else{
 		code.classList.add('failure');
